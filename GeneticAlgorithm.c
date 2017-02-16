@@ -208,6 +208,7 @@ void cross(Generation* generation, int generationNumber, int chromLength, int po
    // int numOfWorst = bottomRate * popLength;
    // int end = popLength - numOfWorst;
 
+        
     for(start; start < end ; start  = start + 2){
         int geneStart = rand() % chromLength;
        // int genestart2 = rand()% chromLength;
@@ -218,8 +219,41 @@ void cross(Generation* generation, int generationNumber, int chromLength, int po
         int randomPar2 = rand() % popLength;
        // int randomPar1 = rouletteWheel (generation, previousGeneration, popLength);
        // int randomPar2 = rouletteWheel (generation, previousGeneration, popLength);
+        
+        
+        
+        int randGene = rand() % chromLength / 2;
+        int randGene2 = randGene + (rand() % chromLength / 2);
+        //go from o to randGene for both children
+     
+       
+        //offspring1 gets parent2 middle and parent1 exterior
+        //offspring2 gets parent1 middle and parent2 exterior
+        for(int start  = 0; start < randGene; start++){
+        
+            temp.population[0].chromosome[start] = generation[generationNumber].population[randomPar1].chromosome[start];
+            //temp.population[0].chromosome[geneStart] = generation[generationNumber].population[randomPar2].chromosome[negGeneStart];
+            
+            temp.population[1].chromosome[start] = generation[generationNumber].population[randomPar2].chromosome[start];
+            //temp.population[1].chromosome[negGeneStart] = generation[generationNumber].population[randomPar1].chromosome[negGeneStart];
+        }
+        for(int n = randGene2; n < chromLength; n++){
+            
+            temp.population[0].chromosome[n] = generation[generationNumber].population[randomPar1].chromosome[n];
+            temp.population[1].chromosome[n] = generation[generationNumber].population[randomPar2].chromosome[n];
+        }
+        for(randGene; randGene < randGene2; randGene++){
+
+            //notice how these two are switched, this way the middles are switched for the children. 
+            temp.population[1].chromosome[randGene] = generation[generationNumber].population[randomPar1].chromosome[randGene];
+            temp.population[0].chromosome[randGene] = generation[generationNumber].population[randomPar2].chromosome[randGene];
+
+        }
+
+        //Single point crossover
+        /*
         for(; geneStart < chromLength; geneStart++){
-            temp.population[0].chromosome[geneStart]  = generation[generationNumber].population[randomPar1].chromosome[geneStart];
+            temp.population[0].chromosome[geneStart] = generation[generationNumber].population[randomPar1].chromosome[geneStart];
             temp.population[0].chromosome[geneStart] = generation[generationNumber].population[randomPar2].chromosome[negGeneStart];
             
             temp.population[1].chromosome[negGeneStart] = generation[generationNumber].population[randomPar2].chromosome[geneStart];
@@ -227,6 +261,8 @@ void cross(Generation* generation, int generationNumber, int chromLength, int po
             
             negGeneStart--;
         }
+        */
+
         generation[generationNumber].population[start] = temp.population[0];
         generation[generationNumber].population[start + 1] = temp.population[1];
 	}
@@ -381,20 +417,6 @@ int main(){
       
     }
 
-    /*
-    for(int i = 0; i < popLength; i++){
-        printf("Generation %d row [%d] has fitness score %f \n" , 1, i , generation[1].population[i].fitnessScore);
-    }
-    
-    for(int i = 0; i < popLength; i++){
-        printf("Generation %d row [%d] has fitness score %f \n" , 2, i , generation[2].population[i].fitnessScore);
-    }
-    
-    
-    for(int i = 0; i < popLength; i++){
-        printf("Generation %d row [%d] has fitness score %f \n" , 3, i , generation[3].population[i].fitnessScore);
-    }
-    */
     free(generation);
 	return 0;
 }
