@@ -10,8 +10,8 @@ char* string[200];
 //int binary2Decimal(int*, int, int);
 float boundVariable( int );
 //int maxGenerations = 10;
-
-
+//type *pointer = malloc(num_elems * sizeof(*pointer));
+//Generation *generation = malloc(*maxGenerations * sizeof(*generation));
 /*
  *
  * organizes the data into a coherent data structure for each generation
@@ -111,7 +111,7 @@ int binary2Decimal(int popLength, int soluLength, struct Generation* generation,
 
 //Method for bounding a variable value.
 float boundVariable( int unboundedVariableValue ){
-	float boundedVariable;
+	float boundedVariable = 0;
 	float floatUnboundedVariableValue = (float)unboundedVariableValue;
 	boundedVariable = (floatUnboundedVariableValue - 32768) / 32;
 
@@ -161,136 +161,115 @@ void sort(Generation* generation, int generationNumber, int popLength){
 
 void preserveElites(Generation* generation, int generationNumber, float eliteRate, int popLength){ 
 	
-   // float percOfElites = eliteRate * .01;
-   // int numberOfElites = 0;
-   int numberOfElites = popLength * eliteRate;
-    printf("Number Of Elites = %d \n ", numberOfElites);
+    int numberOfElites = popLength * eliteRate;
     for(int n = 0; n < numberOfElites; n++){
 		generation[generationNumber].population[n] = generation[generationNumber - 1].population[n];
 	}  
 }
-
+/*
 void preserveWorst(Generation* generation, int generationNumber, int popLength, float bottomRate){
 	
     int numberOfWorst = popLength * bottomRate;
     int start = popLength - numberOfWorst;
-
+    
     for(int n = 0; n < numberOfWorst; n++){
 	    	
 		generation[generationNumber].population[start] = generation[generationNumber - 1].population[start];
         start ++;
 	}
 }
+*/
 
-void mutate(Generation* generation, int generationNumber, int chromLength, 
-				int popLength, float mutation, float eliteRate, float bottomRate){
-
-    int numberOfMutations = mutation * popLength;
-    int excluded = eliteRate * popLength;
-    
-    for(int n = 0; n < numberOfMutations; n++){
-        int randomPop = rand() % popLength;
-        int randGene = rand() % chromLength;
-        
-        if(randomPop  < excluded){
-            randomPop += excluded;
-        }
-    
-        int bitValue = generation[generationNumber].population[randomPop].chromosome[randGene];
-        bitValue += 1;
-        bitValue = bitValue % 2;
-        generation[generationNumber].population[randomPop].chromosome[randGene] = bitValue;	
-    }
-}
-
-int rouletteWheel (Generation* generation, int generationNumber, int popLength){
+int rouletteWheel (Generation* generation, int previousGeneration, int popLength){
     int maxFitness = 0;
     int selection = 0;
-   // int numberOfChildren = popLength*crossRate;
-    
 
     for(int i = 0; i < popLength; i++){
-       maxFitness = maxFitness + generation[generationNumber].population[i].fitnessScore;
+       maxFitness = maxFitness + generation[previousGeneration].population[i].fitnessScore;
     }
-     
+
     float random = rand() % maxFitness;
-    //int tempMaxFitness = maxFitness;
     int i = 0;
     while(random > 0){
-        int current = generation[generationNumber].population[i].fitnessScore;
+        int current = generation[previousGeneration].population[i].fitnessScore;
         random = random - current;
         i++;
     }
-   // for(int i = 0; i < popLength; i++){
-   //     int current = generation[generationNumber].population[i].fitnessScore;
-   //     tempMaxFitness = tempMaxFitness - current;
-   //     if(tempMaxFitness < 0){
-   //         return i;
-   //         break;
-   //     }
     return i;
 }
 
 
-
-
-void cross(Generation* generation, int generationNumber, int chromLength, int popLength, 
-			int mutationRate, int eliteRate, int bottomRate, int crossRate){
-//	srand(time(NULL));
+void cross(Generation* generation, int generationNumber, int chromLength, int popLength, int mutationRate, int eliteRate, int crossRate){
     struct Generation temp;
-    int numberOfChildren = crossRate * popLength;
+    int numOfChildren = crossRate * popLength;
     int numOfElite = eliteRate * popLength;
     int start = numOfElite;
-    int numOfWorst = bottomRate * popLength;
-    int end = popLength - numOfWorst;
+    int end = numOfElite + numOfChildren;
+   // int numOfWorst = bottomRate * popLength;
+   // int end = popLength - numOfWorst;
 
     for(start; start < end ; start  = start + 2){
-		//int randomPop = rand() % popLength;
-		int randomGene = rand() % chromLength;
-    //  int randomPar1 = rand() % popLength;
-    //  int randomPar2 = rand() % popLength;
-        /*    
-            if(randomPop  < excluded){
-            randomPop += excluded;
-        }
-        if(randomPop > (popLength - excluded)){
-            randomPop  -= excluded;
-        }
-        */
-        int geneStart = randomGene;
-        int negGeneStart = randomGene;
-        //temp.population[0] = rouletteWheel( generation[generationNumber-1] );
-        //temp.population[1] = rouletteWheel( generation[generationNumber-1] );
-        //since this is built from previous generation we use generationNumber - 1;
-        int previousGeneration = generationNumber - 1;
-
-        int randomPar1 = rouletteWheel (generation, previousGeneration, popLength);
-        int randomPar2 = rouletteWheel (generation, previousGeneration, popLength);
+        int geneStart = rand() % chromLength;
+       // int genestart2 = rand()% chromLength;
+        int negGeneStart = geneStart;
+       // int negGeneStart2 = geneStart2;
+       // int previousGeneration = generationNumber - 1;
+        int randomPar1 = rand() % popLength;
+        int randomPar2 = rand() % popLength;
+       // int randomPar1 = rouletteWheel (generation, previousGeneration, popLength);
+       // int randomPar2 = rouletteWheel (generation, previousGeneration, popLength);
         for(; geneStart < chromLength; geneStart++){
             temp.population[0].chromosome[geneStart]  = generation[generationNumber].population[randomPar1].chromosome[geneStart];
+            temp.population[0].chromosome[geneStart] = generation[generationNumber].population[randomPar2].chromosome[negGeneStart];
             
-            temp.population[1].chromosome[geneStart] = generation[generationNumber].population[randomPar2].chromosome[geneStart];
+            temp.population[1].chromosome[negGeneStart] = generation[generationNumber].population[randomPar2].chromosome[geneStart];
+            temp.population[1].chromosome[negGeneStart] = generation[generationNumber].population[randomPar1].chromosome[negGeneStart];
+            
+            negGeneStart--;
         }
-        for(; negGeneStart > 0; negGeneStart--){
-            temp.population[0].chromosome[negGeneStart] = generation[generationNumber].population[randomPar1].chromosome[negGeneStart];
-
-            temp.population[1].chromosome[negGeneStart] = generation[generationNumber].population[randomPar2].chromosome[negGeneStart];
-        }
-        
         generation[generationNumber].population[start] = temp.population[0];
-
         generation[generationNumber].population[start + 1] = temp.population[1];
-    
-
 	}
-
-	//make it to where if x < bottomRate then x = x + bottomRate
-	// & where if x > popLength - eliteRate then x = x - eliteRate
-
-
-
-
 } 
+
+void fillPop(Generation* generation, int generationNumber, int chromLength, int popLength, float mutation, float eliteRate, int crossRate){
+    
+    int numberOfElite = popLength * eliteRate;
+    int numberOfChildren = popLength * crossRate;
+    int start = numberOfElite + numberOfChildren;
+    for(start; start < popLength; start++){
+        for(int i = 0; i < chromLength; i++){
+                generation[generationNumber].population[start].chromosome[i] = rand() % 2;	
+        }
+    }
+}
+
+void mutate(Generation* generation, int generationNumber, int chromLength, int popLength, float mutation, float eliteRate){
+
+    int numberOfMutations = mutation * popLength;
+    int excluded = eliteRate * popLength;
+   //int start = excluded;
+    for(int n = 0; n < numberOfMutations; n++){
+        int randomPop = rand() % popLength;
+        int randGene = rand() % chromLength;
+        int randGene2 = rand() % chromLength; 
+        if(randomPop  < excluded){
+            randomPop = randomPop + excluded;
+        }
+        int bitValue = generation[generationNumber].population[randomPop].chromosome[randGene];
+        bitValue = bitValue + 1;
+        bitValue = bitValue % 2;
+        generation[generationNumber].population[randomPop].chromosome[randGene] = bitValue;	 
+        
+        bitValue = generation[generationNumber].population[randomPop].chromosome[randGene2];
+        bitValue = bitValue + 1;
+        bitValue = bitValue % 2;
+        generation[generationNumber].population[randomPop].chromosome[randGene2] = bitValue;
+        
+    }
+}
+
+
 
 
 
@@ -303,35 +282,41 @@ int main(){
     float eliteRate = .05;
     float crossRate = 0.05; 
     float mutation = 0.1;
-    float bottomRate = 0.8;
-	//Start and input values 
-
-    //fflush(stdout);        //  Flush the stream.
-
+   // float bottomRate = 0.8;
+	
+   //Start and input values 
     printf("Would you like to input own values? Enter y or n : \n ");
     char choice[0];
     scanf("%c", choice);
     if(choice[0] == 'y'){
-        printf("All values must be entered as decimal values. i.e. 5 percent is .05 \n");
-        
-        //fflush(stdout);        //  Flush the stream.
-        
+        printf("All values must be entered as decimal values. i.e. 5 percent is .05 \n");    
         populationSize = input_value("population Size");
         chromosomeLength = input_value("Chromosome Length");
         variables = input_value("number of variables");
         maxGenerations = input_value("Maximum number of generations");
         eliteRate = input_value("percentage rate for preserving elites of last generation.");
-        bottomRate = input_value("percentage rate for the bottom fitness solutions to be preserved for next generation");
+       // bottomRate = input_value("percentage rate for the bottom fitness solutions to be preserved for next generation");
+        crossRate = input_value("percentage rate of cross/children for next generation"); 
         mutation = input_value("percentage rate of mutation for next generation");
-        crossRate = input_value("percentage rate of cross/children for next generation");
     }	
     /*
 	 * Instantiate array for solution representation and fill with random bit values, make a 2d array 
 	*/
-    printf("eliteRate = %f", eliteRate);
 	int soluLength = chromosomeLength;	
 	int popLength = populationSize;
-	struct Generation generation[50];
+	
+
+    //student *p = (student *)malloc(sizeof(student));
+
+    //int *list;
+
+    //list  = (int *) malloc(N * sizeof(int));i
+
+    struct Generation* generation = malloc(maxGenerations * sizeof(*generation));
+    generation[maxGenerations];
+    //hashTable *table = malloc(N*sizeof(hashTable)); //allocate memory
+    //... use it
+    //    free(table); //free memory
 
 	for(int generationNumber = 0; generationNumber < maxGenerations; generationNumber ++){	
 		//instantiate
@@ -344,14 +329,13 @@ int main(){
 
 		else{
 			preserveElites(generation , generationNumber, eliteRate, popLength);
-			preserveWorst(generation , generationNumber, popLength, bottomRate);
-			mutate(generation, generationNumber, chromosomeLength, popLength, mutation, eliteRate, bottomRate);
-			cross(generation, generationNumber, chromosomeLength, popLength, mutation,
-                    eliteRate, bottomRate, crossRate);	
-		//cross();
+			//preserveWorst(generation , generationNumber, popLength, bottomRate);
+			cross(generation, generationNumber, chromosomeLength, popLength, mutation, eliteRate, crossRate);
+            fillPop(generation, generationNumber, chromosomeLength, popLength, mutation, eliteRate, crossRate);
+			mutate(generation, generationNumber, chromosomeLength, popLength, mutation, eliteRate);
+            //cross();
 	    }	
-	
-				
+		
 		//get variable values
 		int arrayLength = variables;		
 		int unboundedVariableValues[popLength][arrayLength];
@@ -388,10 +372,14 @@ int main(){
 		//populate the next generation
 		
 
-		
-	    printf("Generation %d has fitness score %f \n" , generationNumber , generation[generationNumber].population[0].fitnessScore); 
-    }
     
+      //  for(int i = 0; i < popLength; i++){
+      //      printf("Generation %d row [%d] has fitness score %f \n" , generationNumber , i,  generation[generationNumber].population[i].fitnessScore);
+      //  }
+    	
+	    printf("Generation %d has fitness score %f \n" , generationNumber , generation[generationNumber].population[0].fitnessScore); 
+      
+    }
 
     /*
     for(int i = 0; i < popLength; i++){
@@ -407,6 +395,7 @@ int main(){
         printf("Generation %d row [%d] has fitness score %f \n" , 3, i , generation[3].population[i].fitnessScore);
     }
     */
+    free(generation);
 	return 0;
 }
 
