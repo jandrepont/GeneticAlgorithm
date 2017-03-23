@@ -3,7 +3,8 @@
 int main(){
 	srand(time(NULL));
 
-	Chromosome chromosome(160, 10);
+	std::vector<Chromosome>  chromosome(2, Chromosome(160, 10));
+	/*
 	for(int i = 0; i < chromosome.get_size(); i++){
 		cout << "Contents of Chromosome: " << chromosome.get_gene(i) << "at " << i << "\n"; 
 	}
@@ -25,7 +26,7 @@ int main(){
 		cout << "Unbounded Variable Value: " << chromosome.get_boundedVariable(i) << "\n";
 	}
 	cout<< "Fitness = " << chromosome.get_fitness();
-	
+	*/
 	
 	
 return 0;

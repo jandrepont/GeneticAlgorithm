@@ -31,9 +31,9 @@ Population::Population(int _numOfChrom, int _sizeOfGenes, int _numOfVars)
 
 	this->popNum = 0;
 
-	this->elite = 0;
+	this->elite = .05;
 	 
-	this->cross = 0;
+	this->cross = .8;
 	
 	
 	std::vector<Chromosome> chromosome;
@@ -60,7 +60,7 @@ double Population::get_similarity(){
  */ 
 double Population::get_fitness(int index)
 {
-	return this->chromosome[index].get_fitness();
+	return chromosome[index].get_fitness();
 }
 
 /*
@@ -137,6 +137,38 @@ float Population::get_cross()
 
 
 /*
+ * Getter and setter for chromosome's bit values
+ */
+void Population::set_gene(int chromNum, int index, int bitVal)
+{
+	this->chromosome[chromNum].set_gene(index, bitVal);
+	chromosome[chromNum].set_vars(true); //need to rewrite/recompute new values
+}
+int Population::get_gene(int chromNum, int index)
+{
+	return chromosome[chromNum].get_gene(index);
+}
+
+/*
+ * Getter and setter for chromosome using vectors
+ */
+void Population::set_chrom(int chromNum, Chromosome chrom)
+{
+	//this->chromosome[chromNum].set_chrom(chrom.get_chrom());
+	this->chromosome[chromNum] = chrom;
+	//need to recompute the chrom values
+	chromosome[chromNum].set_vars(true); //true for when rewritting over var values
+	chromosome[chromNum].set_boundedVariable();
+	chromosome[chromNum].set_fitness();
+
+}
+Chromosome Population::get_chrom(int chromNum)
+{
+	return this->chromosome[chromNum];
+}
+
+
+/*
  * Sorting method using bubble sort (for now, need to use better sorting algorith)
  */
 void Population::sort()
@@ -164,6 +196,11 @@ void Population::mutate(int mutateRate)
 	{ 
 		//std::cout << " n is equal to " << n;
 		int randChrom = rand() % numOfChrom;
+		if(randChrom < elite)
+		{
+			randChrom += elite;
+		}
+
 		int randGene = rand() % sizeOfGenes;
 		//std::cout << "randChrom = " << randChrom << "\n";
 		chromosome[randChrom].mutate_gene(randGene);

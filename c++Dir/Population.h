@@ -58,8 +58,13 @@ class Population {
 		void set_cross(float rate);
 		float get_cross();
 
-		
+		//Gett and setter for chromosome using bit values
+		void set_gene(int chromNum , int index, int bitVal);
+		int get_gene(int chromNum, int index);
 
+		//Getter and setter for chromosome using vectors
+		void set_chrom(int chromNum, Chromosome chrom);
+		Chromosome get_chrom(int chromNum);
 		
 		
 		//Mutate method
