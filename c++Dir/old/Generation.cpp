@@ -1,4 +1,4 @@
-#include "Generation.h" 
+#include "Generation.h"
 #include <stdio.h>
 #include <ctime> 
 #include <time.h> 
@@ -8,6 +8,7 @@
  *
  */
 Generation::Generation(){
+	/*
 	chromLength;
     populationSize;
     variables;
@@ -17,6 +18,7 @@ Generation::Generation(){
     mutationRate;
     totalSimilarity;
     population;
+	*/
 }
 /*
  *
@@ -159,7 +161,7 @@ double Generation::get_totalSimilarity(){
 void Generation::inst_Solution(Generation _generation[], int generationNumber){
 	srand (time(0));
 	//first we declare a vector tempChrom
-	vector<int> tempChrom;
+	vector<int>* tempChrom;
 	//loop through = to # of population
 	for(int i = 0; i < _generation->get_populationSize(); i++){
 		//create random 1s & 0s for length = to chromLength
@@ -167,7 +169,7 @@ void Generation::inst_Solution(Generation _generation[], int generationNumber){
 			tempChrom[j] = rand() % 2;
 		}
 		//set chrom for pop[i] using set_chromosome which takes a vector
-		_generation[generationNumber].population[i].set_chromosome(tempChrom);
+		this->population[i].push_back(1); 
 	}	    
 }
 

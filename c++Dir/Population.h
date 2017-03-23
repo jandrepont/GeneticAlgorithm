@@ -1,52 +1,78 @@
 //population stores variables and characteristics of each population within each generation
 #include "Chromosome.h"
-using namespace std;
+
 
 #ifndef POPULATION_H
 #define POPULATION_H
 
-class Population{
+class Population {
     private:
     
-        Chromosome chromosome;
-        double fitness;
+		std::vector<Chromosome> chromosome;
         double similarity;
-        double decValue;
-        double unboundVar;
-        double boundVar;
-
+		int numOfChrom;
+		int sizeOfGenes;
+		int numOfVars;
+		int popNum;
+		float elite;
+		float cross;
     public:
 
         //Default Constructor
         Population();
-        //setter and getter methods for chromosomes/genes
-        void set_chromosome(int index, int _bitValue);
-        int get_chromosome(int index);
-		
-		//overloaded set_chromosome method for allowing to pass a vector
-        void set_chromosome(const vector<int> &_chromosome);
-        vector<int> get_chromosome();
-		
-		//Fitness getter and setter methods
-        void set_fitness(double _fitness);
-        double get_fitness();
+
+		//Constructor for setting the size and numOfVars for each Chrom in Pop
+		Population(int numOfChrom, int sizeOfGenes, int numOfVars);
 		
 		//Similarity Mutator and Accessor methods
 		void set_similarity(double _similarity);
         double get_similarity();
 		
-		//DecValue Mutator and Accessor
-		void set_decValue(double _decValue);
-        double get_decValue();
+		//Getter for fitness
+		double get_fitness(int index);
 		
-		//UnboundVar Mutator and Accessor
-		void set_unboundVar(double _unboundVar);
-        double get_unboundVar();
+		//sort method, currently using bubble sort
+		void sort();
 		
-		//BoundVar Mutator and Accessor
-		void set_boundVar(double _boundVar);
-        double get_boundVar();
+		//Getter and setter for numOfChrom
+		void set_numOfChrom(int _num);
+		int get_numOfChrom();
 
-}population;
+		//Getter and setter for sizeOfGenes
+		void set_sizeOfGenes(int _size);
+		int get_sizeOfGenes();
+
+		//Getter and setter for numOfVars
+		void set_numOfVars(int _vars);
+		int get_numOfVars();
+		
+		//Getter and setter for population number?
+		void set_popNum(int _num);
+		int get_popNum();
+
+		//Getter and setter for elite rate
+		void set_elite(float rate);
+		float get_elite();
+		
+		//Getter and setter for the cross rate
+		void set_cross(float rate);
+		float get_cross();
+
+		
+
+		
+		
+		//Mutate method
+		void mutate(int mutateRate);
+
+		//Getter and setter for finding similarity amongst chromosomes
+		
+		//crossover method needs multiple populations
+
+
+
+
+
+};
 
 #endif

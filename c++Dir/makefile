@@ -1,15 +1,22 @@
 default = executable
 
-executable: main.o Generation.o Population.o Chromosome.o
-	g++ main.o Generation.o Population.o Chromosome.o -o pls.exe
-main.o: main.cpp 
-	g++ -c main.cpp
+executable: main.cpp Population.o function.o Chromosome.o
+	g++ main.cpp Population.o function.o Chromosome.o -o pls.exe
 
-Generation.o: Generation.cpp Generation.h Population.o
-	g++ -c Generation.cpp
-
-Population.o: Population.cpp Population.h Chromosome.h
+Population.o: Population.cpp
 	g++ -c Population.cpp
 
-Chromosome.o: Chromosome.h
-	g++ -c Chromosome.h -o Chromosome.o
+Population.cpp: Population.h
+	g++ Population.h 
+
+Chromosome.o: Chromosome.cpp
+	g++ -c Chromosome.cpp
+
+Chromosome.cpp: Chromosome.h
+	g++ Chromosome.h
+
+function.o: function.cpp
+	g++ -c function.cpp
+
+function.cpp: function.h
+	g++ function.h

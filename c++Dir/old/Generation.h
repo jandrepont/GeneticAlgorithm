@@ -5,7 +5,7 @@
 #ifndef GENERATION_H
 #define GENERATION_H
                    
-class Generation
+class Generation : public Population
 {
     private:
         static int chromLength; 
@@ -17,7 +17,7 @@ class Generation
         static float crossRate;
         static float mutationRate;
         static double totalSimilarity;        
-        vector<Population> population;
+        static vector<Population> population();
 
     public:
     //default constructor
