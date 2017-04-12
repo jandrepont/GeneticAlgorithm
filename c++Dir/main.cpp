@@ -51,7 +51,7 @@ void cross1(vector<Population> &population, int popNum)
 		//population[0].get_cross() * population[0].get_numOfChrom();
 		
 	
-	int start = 20; 
+	int start = 10; 
 	//population[0].get_elite() * population[0].get_numOfChrom();
 	int previousPop = popNum - 1;
 	vector<Chromosome> chrom;
@@ -98,6 +98,110 @@ void cross1(vector<Population> &population, int popNum)
 }
 
 
+
+
+
+void cross2(vector<Population> &population, int popNum){
+    vector <Chromosome> temp;
+	temp.push_back(Chromosome(160,10));
+	temp.push_back(Chromosome(160,10));
+    int prevPop = popNum - 1;
+	int start  = population[0].get_elite() * population[0].get_numOfChrom();
+	int end = population[0].get_cross() * population[0].get_numOfChrom();
+	end = start + end;
+	for(start; start < end; start  = start + 2){
+        
+        int randomPar1 = rouletteWheel(population, prevPop);
+        int randomPar2 = rouletteWheel(population, prevPop);
+        
+		while(randomPar1 == randomPar2)
+		{
+			randomPar2 = rouletteWheel(population, prevPop);
+
+		}	
+        
+        //Random 2 point crossover
+        
+        int rand1 = random() % population[0].get_sizeOfGenes();
+        int rand2 = random() % population[0].get_sizeOfGenes();
+        int point1, point2;
+        
+        if(rand1 >= rand2){
+            point2 = rand1;
+            point1 = rand2;
+        }
+        else if(rand1 <= rand2){
+            point1 = rand1;
+            point2 = rand2;
+        }
+        
+		/*
+        //Two Point Crossover
+        int midPoint = population[0].get_sizeOfGenes() / 2;
+        int point1 = midPoint / 2;
+        int point2 = midPoint + point1;
+        */
+		//go from o to point1 for both children
+        //offspring1 gets parent2 middle and parent1 exterior
+        //offspring2 gets parent1 middle and parent2 exterior
+        
+
+        for(int gene = 0; start < point1; start++){
+        
+            temp[0].set_gene( gene, population[prevPop].get_gene(randomPar1, gene));
+			temp[1].set_gene( gene, population[prevPop].get_gene(randomPar2, gene));
+		}
+        
+		for(int gene = point2; gene < population[0].get_sizeOfGenes(); gene++){
+            
+			//Parents switch 
+            temp[0].set_gene( gene, population[prevPop].get_gene(randomPar2, gene)); 
+			temp[1].set_gene( gene, population[prevPop].get_gene(randomPar1, gene));
+		}
+        
+		population[popNum].set_chrom(start, temp[0]);
+		population[popNum].set_chrom((start + 1), temp[1]);
+	}
+} 
+
+
+void altCross(vector<Population> &population, int popNum){
+	vector<Chromosome> temp;
+	temp.push_back(Chromosome(160,10));
+	temp.push_back(Chromosome(160,10));
+
+    int start = population[0].get_elite() * population[0].get_numOfChrom();
+    int end = start + (population[0].get_cross() * population[0].get_numOfChrom());
+	int prevPop = popNum - 1;
+        
+    for(start; start < end ; start  = start + 2){
+
+        int randomPar1 = rouletteWheel(population, prevPop);
+        int randomPar2 = rouletteWheel(population, prevPop);
+        //alternating crossover
+        
+        for(int gene = 0; gene < population[0].get_sizeOfGenes(); gene++){
+            if(gene % 2 == 0){
+             
+                //temp.population[0].chromosome[n] = generation[generationNumber].population[randomPar1].chromosome[n];
+				temp[0].set_gene( gene, population[prevPop].get_gene(randomPar1, gene));
+				//temp.population[1].chromosome[n] = generation[generationNumber].population[randomPar2].chromosome[n];
+				temp[1].set_gene(gene, population[prevPop].get_gene(randomPar2, gene));
+			}
+            if(gene % 2 == 1){
+
+                //notice how the parents are swithed
+				temp[0].set_gene(gene, population[prevPop].get_gene(randomPar2, gene));			
+				temp[1].set_gene(gene, population[prevPop].get_gene(randomPar1, gene));
+			}       
+        }
+		population[popNum].set_chrom(start, temp[0]);
+		population[popNum].set_chrom((start + 1), temp[1]);
+	}
+} 
+
+
+
 int main(){
 	
 	srand(time(NULL));
@@ -109,8 +213,13 @@ int main(){
 	population.push_back(Population(200,160,10));
 	population[0].set_elite(0.05);
 	population[0].set_cross(0.8);
-
-
+	population[0].findSim();
+	
+	
+	cout << "population[0] = " <<  population[0].get_fitness(0) << "\n";
+	cout << "Similarity[0] = " << population[0].get_similarity() << "\n";	
+	
+	
 	int populationNumber = 1;
 	int previousPopulation = 0;
 	
@@ -119,24 +228,22 @@ int main(){
 	for(int i = 0; i < 1000; i++)
 	{
 		
-		if(dummy > 0)
-		{
-			population.erase(population.begin());
-		}
-
 		population.push_back(Population(200, 160, 10));
-
-		cout << "population " << i << " = " <<  population[previousPopulation].get_fitness(0) << "\n";
+		population[0].set_elite(0.05);
+		population[0].set_cross(0.8);
+		preserveElites(population, 0); //0
+		cross1(population, 1);
+		population[1].mutate(10);
+		population[1].sort();
+		population[1].findSim();		
+			
+		cout << "population " << i << " = " <<  population[1].get_fitness(0) << "\n";
+		//cout << "Similarity " << i << " = " << population[1].get_similarity() << "\n";	
 		
-		preserveElites(population, previousPopulation);
 		
-		cross1(population, populationNumber);
+		population.erase(population.begin());
 		
-		population[populationNumber].mutate(10);
-		
-		population[populationNumber].sort();
-		
-		dummy++;
+	
 	}
 	
 

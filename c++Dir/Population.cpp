@@ -43,7 +43,7 @@ Population::Population(int _numOfChrom, int _sizeOfGenes, int _numOfVars)
 		this->chromosome.push_back(chrom);
 	}
 	sort();
-	
+
 }
 /*
  * Getter and setter for similarity
@@ -196,9 +196,9 @@ void Population::mutate(int mutateRate)
 	{ 
 		//std::cout << " n is equal to " << n;
 		int randChrom = rand() % numOfChrom;
-		if(randChrom < elite)
+		if(randChrom < 10)
 		{
-			randChrom += elite;
+			randChrom += 10;
 		}
 
 		int randGene = rand() % sizeOfGenes;
@@ -207,6 +207,60 @@ void Population::mutate(int mutateRate)
 		//n++;
 	}
 }
+
+/*
+ * Finds the similarity between chromosomes based on their bit values at index
+ */
+void Population::findSim()
+{
+
+	double simBits = 0.0;
+	double simPerc = 0.0;
+	for(int i = 0; i < numOfChrom-1; i++)
+	{
+		for(int j = i + 1; j < numOfChrom; j++)
+		{
+			
+			if(chromosome[i].get_fitness() == chromosome[j].get_fitness())
+			{	
+				simBits += sizeOfGenes;
+			}
+			
+			if(chromosome[i].get_fitness() != chromosome[j].get_fitness())
+			{	
+				for(int k = 0; k < sizeOfGenes; k++)
+				{
+					if(chromosome[i].get_gene(k) == chromosome[j].get_gene(k))
+					{
+						simBits += 1;
+					}
+					
+				}
+			}
+			
+			if(simBits > 0)
+			{
+				simPerc += (simBits / 160);
+				simBits = 0;	
+			}
+		}
+		
+		simPerc = (simPerc / (200-i));
+	}
+	
+	set_similarity(simPerc);
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

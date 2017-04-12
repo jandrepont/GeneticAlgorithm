@@ -26,8 +26,9 @@ class Population {
 		
 		//Similarity Mutator and Accessor methods
 		void set_similarity(double _similarity);
-        double get_similarity();
-		
+        void findSim();
+		double get_similarity();
+				
 		//Getter for fitness
 		double get_fitness(int index);
 		
