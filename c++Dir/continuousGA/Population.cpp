@@ -42,7 +42,7 @@ Population::Population(int _numOfChrom, int _sizeOfChrom)
 		Chromosome chrom(sizeOfChrom);
 		this->chromosome.push_back(chrom);
 	}
-	sort();
+	sort(0,200);
 
 }
 /*
@@ -129,13 +129,19 @@ float Population::get_cross()
  */
 void Population::set_gene(int chromNum, int index, double value)
 {
-	this->chromosome[chromNum].set_gene(index, value);
-
+	if(index >= 0 && index < sizeOfChrom)
+	{
+		this->chromosome[chromNum].set_gene(index, value);
+	}
 }
 int Population::get_gene(int chromNum, int index)
 {
-	return chromosome[chromNum].get_gene(index);
+	if(index >= 0 && index < sizeOfChrom)
+	{
+		return chromosome[chromNum].get_gene(index);
+	}
 }
+
 
 /*
  * Getter and setter for chromosome using vectors
@@ -155,18 +161,36 @@ Chromosome Population::get_chrom(int chromNum)
 
 
 /*
- * Sorting method using bubble sort (for now, need to use better sorting algorith)
- */
-void Population::sort()
+ * Quicksort 
+ */ 
+void Population::sort(int p, int q)
 {
-	for(int i = 0; i < chromosome.size();i++)
+	int r;
+	if(p<q)
 	{
-		for (int j = i + 1; j < chromosome.size(); j++)
+		r = partition(p,q);
+		sort(p,r);
+		sort(r+1, q);
+	}
+}
+
+int Population::partition(int p, int q)
+{
+	int x = chromosome[p].get_fitness();
+	int i = p;
+	int j;
+
+	for(j = p+1; j<q; j++)
+	{
+		if(chromosome[j].get_fitness() >= x)
 		{
-			if(chromosome[i] < chromosome[j])
+			i = i + 1;
 			std::swap(chromosome[i], chromosome[j]);
 		}
 	}
+
+	std::swap(chromosome[i], chromosome[p]);
+	return i;
 }
 
 /*

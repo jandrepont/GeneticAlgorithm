@@ -1,4 +1,5 @@
 #include "Population.h"
+#include <random> 
 
 
 
@@ -45,6 +46,8 @@ int rouletteWheel(std::vector<Population> population, int prevPop)
 	return i;
 }
 
+/*
+
 void cross1(std::vector<Population> &population, int popNum)
 {
 	int numOfChildren = population[0].get_cross() * population[0].get_numOfChrom();
@@ -66,17 +69,20 @@ void cross1(std::vector<Population> &population, int popNum)
 		int negGeneStart = geneStart - 1;
 		int randPar1 = rouletteWheel(population, previousPop);
 		int randPar2 = rouletteWheel(population, previousPop);
+		
 		if(randPar1 == randPar2)
 		{
 			randPar2 = rouletteWheel(population, previousPop);
 
 		}	
-		
+					
 		for(int geneCount = 0; geneCount < population[0].get_sizeOfChrom()  ; geneCount++)
 		{
 			
 			if(negGeneStart > 0) //so we dont go out of bounds of the array. 
 			{
+				
+				
 				
 				chrom[0].set_gene(negGeneStart, population[previousPop].get_gene(randPar2, negGeneStart)); 
 				chrom[1].set_gene(negGeneStart, population[previousPop].get_gene(randPar1, negGeneStart));
@@ -98,9 +104,145 @@ void cross1(std::vector<Population> &population, int popNum)
 		
 	}
 }
+*/
+
+/*
+void comboCross(std::vector<Population> &population, int popNum)
+{
+	
+	
+	
+	//Type of random number distribution
+	std::uniform_real_distribution<double> dist(0,1);  //(min, max)
+				   
+	//Mersenne Twister: Good quality random number generator
+	std::mt19937 rng;
+				  
+	//Initialize with non-deterministic seeds
+	rng.seed(std::random_device{}());
+	
+	
+	int start = population[0].get_elite() * population[0].get_numOfChrom();
+	double child1, child2 , momVar, fatherVar, weight;
+	int previousPop = 0;
+	
+	int numOfChildren = population[0].get_cross() * population[0].get_numOfChrom();
+		
+	for(int child = 0; child < numOfChildren; child+=2 )
+	{
+		
+		int randPar1 = rouletteWheel(population, previousPop);
+		int randPar2 = rouletteWheel(population, previousPop);
+		
+		if(randPar1 == randPar2)
+		{
+			randPar2 = rouletteWheel(population, previousPop);
+
+		}	
+			
+		weight = dist(rng);
+		
+		for(int geneCount = 0; geneCount < 10; geneCount++)
+		{
+
+			momVar = population[previousPop].get_gene(randPar1, geneCount);
+			fatherVar = population[previousPop].get_gene(randPar2, geneCount);
+						
+			//weight = dist(rng);
+			
+			child1 = (weight*momVar) + ((1 - weight)*fatherVar);
+			child2 = ((1-weight)*momVar) + (weight*fatherVar);
+			
+			population[popNum].set_gene(start, geneCount, child1);
+			population[popNum].set_gene(start+1, geneCount, child2);
+			
+
+		}
+		start+=2;
+	}
+
+
+}
+*/
 
 
 
+void comboCross1(std::vector<Population> &population, int popNum)
+{
+	
+	
+	
+	//Type of random number distribution
+	std::uniform_real_distribution<double> dist(0,1);  //(min, max)
+				   
+	//Mersenne Twister: Good quality random number generator
+	std::mt19937 rng;
+				  
+	//Initialize with non-deterministic seeds
+	rng.seed(std::random_device{}());
+	
+	
+	int crossPoint = rand() % 10; //population[0].get_sizeOfChrom();
+
+	//int negGeneStart = geneStart - 1;
+	
+	int start = (population[0].get_elite() * population[0].get_numOfChrom());
+	double val1, val2 , momVar1, momVar2, fatherVar1, fatherVar2, weight;
+	int previousPop = 0;
+	int randPar1, randPar2;
+	int numOfChildren = population[0].get_cross() * population[0].get_numOfChrom();
+			
+	for(int child = 0; child < numOfChildren; child+=2 )
+	{
+		
+		randPar1 = rouletteWheel(population, previousPop);
+		randPar2 = rouletteWheel(population, previousPop);
+		
+		if(randPar1 == randPar2)
+		{
+			randPar2 = rouletteWheel(population, previousPop);
+
+		}	
+			
+		weight = dist(rng);
+		
+		for(int geneCount = 0; geneCount < 10; geneCount++)
+		{
+			if(geneCount < crossPoint)
+			{
+
+				momVar1 = population[previousPop].get_gene(randPar1, crossPoint);
+				fatherVar1 = population[previousPop].get_gene(randPar2, crossPoint);
+				val1 = (weight*momVar1) + ((1 - weight)*fatherVar1);
+				
+				momVar2 = population[previousPop].get_gene(randPar1, crossPoint);
+				fatherVar2 = population[previousPop].get_gene(randPar2, crossPoint);
+				val2 = ((1-weight)*momVar2) + (weight*fatherVar2);
+				
+				population[popNum].set_gene(start, geneCount, val2);  //child1
+				population[popNum].set_gene(start, geneCount, val1);  //child2	
+
+			}
+			
+			if(geneCount >= crossPoint)
+			{
+
+				momVar1 = population[previousPop].get_gene(randPar1, crossPoint);
+				fatherVar1 = population[previousPop].get_gene(randPar2, crossPoint);
+				val1 = (weight*momVar1) + ((1 - weight)*fatherVar1);
+				
+				momVar2 = population[previousPop].get_gene(randPar1, crossPoint);
+				fatherVar2 = population[previousPop].get_gene(randPar2, crossPoint);
+				val2 = ((1-weight)*momVar2) + (weight*fatherVar2);
+				
+				population[popNum].set_gene(start, geneCount, val1);  //child1
+				population[popNum].set_gene(start, geneCount, val2);  //child2	
+			}
+			
+		}
+		start+=2;
+	}
+}
 
 /*
 void cross2(vector<Population> &population, int popNum){
@@ -219,8 +361,8 @@ int main(){
 	//population[0].findSim();
 	
 	
-	std::cout << "population[0] = " <<  population[0].get_fitness(0) << "\n";
-	std::cout << "Similarity[0] = " << population[0].get_similarity() << "\n";	
+	//std::cout << "population[0] = " <<  population[0].get_fitness(0) << "\n";
+	//std::cout << "Similarity[0] = " << population[0].get_similarity() << "\n";	
 	
 	
 	int populationNumber = 1;
@@ -235,13 +377,18 @@ int main(){
 		population[0].set_elite(0.05);
 		population[0].set_cross(0.8);
 		preserveElites(population, 0); //0
-		cross1(population, 1);
+		comboCross1(population, 1);
 		population[1].mutate(10);
-		population[1].sort();
+		population[1].sort(0,200);
 		//population[1].findSim();		
-			
-		std::cout << "population " << i << " = " <<  population[1].get_fitness(0) << "\n";
-		//cout << "Similarity " << i << " = " << population[1].get_similarity() << "\n";	
+		
+		/*
+		for(int j = 0; j < 200; j++){
+
+			std::cout << "population " << i << " = " <<  population[1].get_fitness(j) << "\n";
+		}
+		*/
+		std::cout << "population " << i << " = " << population[0].get_fitness(0) << "\n";	
 		
 		
 		population.erase(population.begin());

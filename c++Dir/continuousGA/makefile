@@ -1,7 +1,7 @@
 default = executable
 
 executable: main.cpp Population.o function.o Chromosome.o
-	g++ main.cpp Population.o function.o Chromosome.o -o pls.exe
+	g++ main.cpp Population.o function.o Chromosome.o -std=c++11 -o pls.exe
 
 Population.o: Population.cpp
 	g++ -c Population.cpp
