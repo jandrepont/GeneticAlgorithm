@@ -35,14 +35,14 @@ Population::Population(int _numOfChrom, int _sizeOfGenes, int _numOfVars)
 	 
 	this->cross = .8;
 	
-	
+
 	std::vector<Chromosome> chromosome;
 	for(int i = 0; i < numOfChrom; i++)
 	{
 		Chromosome chrom(sizeOfGenes,numOfVars);
 		this->chromosome.push_back(chrom);
 	}
-	sort();
+	sort(0,200);
 
 }
 /*
@@ -167,21 +167,41 @@ Chromosome Population::get_chrom(int chromNum)
 	return this->chromosome[chromNum];
 }
 
-
 /*
- * Sorting method using bubble sort (for now, need to use better sorting algorith)
- */
-void Population::sort()
+ * Quicksort 
+ */ 
+void Population::sort(int p, int q)
 {
-	for(int i = 0; i < chromosome.size();i++)
+	int r;
+	if(p<q)
 	{
-		for (int j = i + 1; j < chromosome.size(); j++)
-		{
-			if(chromosome[i] < chromosome[j])
-			std::swap(chromosome[i], chromosome[j]);
-		}
+		r = partition(p,q);
+		sort(p,r);
+		sort(r+1, q);
 	}
 }
+
+int Population::partition(int p, int q)
+{
+	int x = chromosome[p].get_fitness();
+	int i = p;
+	int j;
+
+	for(j = p+1; j<q; j++)
+	{
+		if(chromosome[j].get_fitness() >= x)
+		{
+			i = i + 1;
+			swap(chromosome[i], chromosome[j]);
+		}
+	}
+
+	swap(chromosome[i], chromosome[p]);
+	return i;
+}
+
+
+
 
 /*
  * Mutate, for a specified of chromosomes, switches a random bit value in the gene of 

@@ -33,8 +33,8 @@ class Population {
 		double get_fitness(int index);
 		
 		//sort method, currently using bubble sort
-		void sort();
-		
+		void sort(int p, int q);
+		int partition(int p, int q);		
 		//Getter and setter for numOfChrom
 		void set_numOfChrom(int _num);
 		int get_numOfChrom();

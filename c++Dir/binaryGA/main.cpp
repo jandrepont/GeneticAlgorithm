@@ -234,10 +234,10 @@ int main(){
 		preserveElites(population, 0); //0
 		cross1(population, 1);
 		population[1].mutate(10);
-		population[1].sort();
+		population[1].sort(0,200);
 		population[1].findSim();		
 			
-		cout << "population " << i << " = " <<  population[1].get_fitness(0) << "\n";
+		cout << "population " << i << " = " <<  population[0].get_fitness(0) << "\n";
 		//cout << "Similarity " << i << " = " << population[1].get_similarity() << "\n";	
 		
 		
