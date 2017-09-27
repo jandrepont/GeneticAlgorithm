@@ -46,126 +46,6 @@ int rouletteWheel(std::vector<Population> population, int prevPop)
 	return i;
 }
 
-/*
-
-void cross1(std::vector<Population> &population, int popNum)
-{
-	int numOfChildren = population[0].get_cross() * population[0].get_numOfChrom();
-		
-	
-	int start = population[0].get_elite() * population[0].get_numOfChrom(); 
-	//population[0].get_elite() * population[0].get_numOfChrom();
-	int previousPop = popNum - 1;
-	//temp chrom acts as children
-	std::vector<Chromosome> chrom;
-	chrom.push_back(Chromosome(10));
-	chrom.push_back(Chromosome(10));
-
-	 	
-	for(int child = 0; child < numOfChildren; child+=2)
-	{
-		int geneStart = rand() % population[0].get_sizeOfChrom();
-
-		int negGeneStart = geneStart - 1;
-		int randPar1 = rouletteWheel(population, previousPop);
-		int randPar2 = rouletteWheel(population, previousPop);
-		
-		if(randPar1 == randPar2)
-		{
-			randPar2 = rouletteWheel(population, previousPop);
-
-		}	
-					
-		for(int geneCount = 0; geneCount < population[0].get_sizeOfChrom()  ; geneCount++)
-		{
-			
-			if(negGeneStart > 0) //so we dont go out of bounds of the array. 
-			{
-				
-				
-				
-				chrom[0].set_gene(negGeneStart, population[previousPop].get_gene(randPar2, negGeneStart)); 
-				chrom[1].set_gene(negGeneStart, population[previousPop].get_gene(randPar1, negGeneStart));
-				negGeneStart--;
-			}
-			
-			if(geneStart < population[0].get_sizeOfChrom()){
-
-				chrom[0].set_gene(geneStart, population[previousPop].get_gene(randPar1, geneStart));
-																	//notice hows geneStart and negGeneStart swap
-				chrom[1].set_gene(geneStart, population[previousPop].get_gene(randPar2, geneStart));
-				geneStart++;
-			}
-		}
-		
-		population[popNum].set_chrom(start, chrom[0]);
-		population[popNum].set_chrom((start + 1), chrom[1]);
-		start += 2; 
-		
-	}
-}
-*/
-
-/*
-void comboCross(std::vector<Population> &population, int popNum)
-{
-	
-	
-	
-	//Type of random number distribution
-	std::uniform_real_distribution<double> dist(0,1);  //(min, max)
-				   
-	//Mersenne Twister: Good quality random number generator
-	std::mt19937 rng;
-				  
-	//Initialize with non-deterministic seeds
-	rng.seed(std::random_device{}());
-	
-	
-	int start = population[0].get_elite() * population[0].get_numOfChrom();
-	double child1, child2 , momVar, fatherVar, weight;
-	int previousPop = 0;
-	
-	int numOfChildren = population[0].get_cross() * population[0].get_numOfChrom();
-		
-	for(int child = 0; child < numOfChildren; child+=2 )
-	{
-		
-		int randPar1 = rouletteWheel(population, previousPop);
-		int randPar2 = rouletteWheel(population, previousPop);
-		
-		if(randPar1 == randPar2)
-		{
-			randPar2 = rouletteWheel(population, previousPop);
-
-		}	
-			
-		weight = dist(rng);
-		
-		for(int geneCount = 0; geneCount < 10; geneCount++)
-		{
-
-			momVar = population[previousPop].get_gene(randPar1, geneCount);
-			fatherVar = population[previousPop].get_gene(randPar2, geneCount);
-						
-			//weight = dist(rng);
-			
-			child1 = (weight*momVar) + ((1 - weight)*fatherVar);
-			child2 = ((1-weight)*momVar) + (weight*fatherVar);
-			
-			population[popNum].set_gene(start, geneCount, child1);
-			population[popNum].set_gene(start+1, geneCount, child2);
-			
-
-		}
-		start+=2;
-	}
-
-
-}
-*/
-
-
 
 void comboCross1(std::vector<Population> &population, int popNum)
 {
@@ -182,12 +62,12 @@ void comboCross1(std::vector<Population> &population, int popNum)
 	rng.seed(std::random_device{}());
 	
 	
-	int crossPoint = rand() % 10; //population[0].get_sizeOfChrom();
+	int crossPoint = (rand() % 8) + 1; //population[0].get_sizeOfChrom();
 
 	//int negGeneStart = geneStart - 1;
 	
 	int start = (population[0].get_elite() * population[0].get_numOfChrom());
-	double val1, val2 , momVar1, momVar2, fatherVar1, fatherVar2, weight;
+	double val1, val2 , par1, par2,  weight;
 	int previousPop = 0;
 	int randPar1, randPar2;
 	int numOfChildren = population[0].get_cross() * population[0].get_numOfChrom();
@@ -198,7 +78,7 @@ void comboCross1(std::vector<Population> &population, int popNum)
 		randPar1 = rouletteWheel(population, previousPop);
 		randPar2 = rouletteWheel(population, previousPop);
 		
-		if(randPar1 == randPar2)
+		while(randPar1 == randPar2)
 		{
 			randPar2 = rouletteWheel(population, previousPop);
 
@@ -210,142 +90,43 @@ void comboCross1(std::vector<Population> &population, int popNum)
 		{
 			if(geneCount < crossPoint)
 			{
+			    //need to first get genes
+                par1 = population[previousPop].get_gene(randPar1, geneCount);
+                par2 = population[previousPop].get_gene(randPar2, geneCount);
 
-				momVar1 = population[previousPop].get_gene(randPar1, crossPoint);
-				fatherVar1 = population[previousPop].get_gene(randPar2, crossPoint);
-				val1 = (weight*momVar1) + ((1 - weight)*fatherVar1);
-				
-				momVar2 = population[previousPop].get_gene(randPar1, crossPoint);
-				fatherVar2 = population[previousPop].get_gene(randPar2, crossPoint);
-				val2 = ((1-weight)*momVar2) + (weight*fatherVar2);
-				
-				population[popNum].set_gene(start, geneCount, val2);  //child1
-				population[popNum].set_gene(start, geneCount, val1);  //child2	
-
-			}
+                //place them in new children
+                population[popNum].set_gene(start, geneCount, par1); //child1
+                population[popNum].set_gene(start+1, geneCount, par2); //child2
+            }
 			
-			if(geneCount >= crossPoint)
+			if(geneCount > crossPoint)
 			{
+			    //need to first get genes
+                par1 = population[previousPop].get_gene(randPar1, geneCount);
+                par2 = population[previousPop].get_gene(randPar2, geneCount);
 
-				momVar1 = population[previousPop].get_gene(randPar1, crossPoint);
-				fatherVar1 = population[previousPop].get_gene(randPar2, crossPoint);
-				val1 = (weight*momVar1) + ((1 - weight)*fatherVar1);
-				
-				momVar2 = population[previousPop].get_gene(randPar1, crossPoint);
-				fatherVar2 = population[previousPop].get_gene(randPar2, crossPoint);
-				val2 = ((1-weight)*momVar2) + (weight*fatherVar2);
-				
-				population[popNum].set_gene(start, geneCount, val1);  //child1
-				population[popNum].set_gene(start, geneCount, val2);  //child2	
+                //place them in new children, notice that these are swapped compared to the above block
+                population[popNum].set_gene(start, geneCount, par2); //child1
+                population[popNum].set_gene(start+1, geneCount, par1); //child2
 			}
+            
+            if(geneCount == crossPoint){
+                                
+                //gets us the gene of the crossPoint from Mom
+                par1 = population[previousPop].get_gene(randPar1, crossPoint);
+                //gets us the gene of the crossPoint from father	
+                par2 = population[previousPop].get_gene(randPar2, crossPoint);
+                val1 = (weight*par1) + ((1 - weight)*par2);
+                val2 = ((1-weight)*par1) + (weight*par2);
+                
+                population[popNum].set_gene(start, crossPoint, val1);  //child1
+                population[popNum].set_gene(start+1, crossPoint, val2);  //child2	
+            } 
 			
 		}
 		start+=2;
 	}
 }
-
-/*
-void cross2(vector<Population> &population, int popNum){
-    vector <Chromosome> temp;
-	temp.push_back(Chromosome(160,10));
-	temp.push_back(Chromosome(160,10));
-    int prevPop = popNum - 1;
-	int start  = population[0].get_elite() * population[0].get_numOfChrom();
-	int end = population[0].get_cross() * population[0].get_numOfChrom();
-	end = start + end;
-	for(start; start < end; start  = start + 2){
-        
-        int randomPar1 = rouletteWheel(population, prevPop);
-        int randomPar2 = rouletteWheel(population, prevPop);
-        
-		while(randomPar1 == randomPar2)
-		{
-			randomPar2 = rouletteWheel(population, prevPop);
-
-		}	
-        
-        //Random 2 point crossover
-        
-        int rand1 = random() % population[0].get_sizeOfGenes();
-        int rand2 = random() % population[0].get_sizeOfGenes();
-        int point1, point2;
-        
-        if(rand1 >= rand2){
-            point2 = rand1;
-            point1 = rand2;
-        }
-        else if(rand1 <= rand2){
-            point1 = rand1;
-            point2 = rand2;
-        }
-*/        
-		/*
-        //Two Point Crossover
-        int midPoint = population[0].get_sizeOfGenes() / 2;
-        int point1 = midPoint / 2;
-        int point2 = midPoint + point1;
-        */
-		//go from o to point1 for both children
-        //offspring1 gets parent2 middle and parent1 exterior
-        //offspring2 gets parent1 middle and parent2 exterior
-        
-/*
-        for(int gene = 0; start < point1; start++){
-        
-            temp[0].set_gene( gene, population[prevPop].get_gene(randomPar1, gene));
-			temp[1].set_gene( gene, population[prevPop].get_gene(randomPar2, gene));
-		}
-        
-		for(int gene = point2; gene < population[0].get_sizeOfGenes(); gene++){
-            
-			//Parents switch 
-            temp[0].set_gene( gene, population[prevPop].get_gene(randomPar2, gene)); 
-			temp[1].set_gene( gene, population[prevPop].get_gene(randomPar1, gene));
-		}
-        
-		population[popNum].set_chrom(start, temp[0]);
-		population[popNum].set_chrom((start + 1), temp[1]);
-	}
-} 
-*/
-
-/*
-void altCross(vector<Population> &population, int popNum){
-	vector<Chromosome> temp;
-	temp.push_back(Chromosome(160,10));
-	temp.push_back(Chromosome(160,10));
-
-    int start = population[0].get_elite() * population[0].get_numOfChrom();
-    int end = start + (population[0].get_cross() * population[0].get_numOfChrom());
-	int prevPop = popNum - 1;
-        
-    for(start; start < end ; start  = start + 2){
-
-        int randomPar1 = rouletteWheel(population, prevPop);
-        int randomPar2 = rouletteWheel(population, prevPop);
-        //alternating crossover
-        
-        for(int gene = 0; gene < population[0].get_sizeOfGenes(); gene++){
-            if(gene % 2 == 0){
-             
-                //temp.population[0].chromosome[n] = generation[generationNumber].population[randomPar1].chromosome[n];
-				temp[0].set_gene( gene, population[prevPop].get_gene(randomPar1, gene));
-				//temp.population[1].chromosome[n] = generation[generationNumber].population[randomPar2].chromosome[n];
-				temp[1].set_gene(gene, population[prevPop].get_gene(randomPar2, gene));
-			}
-            if(gene % 2 == 1){
-
-                //notice how the parents are swithed
-				temp[0].set_gene(gene, population[prevPop].get_gene(randomPar2, gene));			
-				temp[1].set_gene(gene, population[prevPop].get_gene(randomPar1, gene));
-			}       
-        }
-		population[popNum].set_chrom(start, temp[0]);
-		population[popNum].set_chrom((start + 1), temp[1]);
-	}
-} 
-*/
-
 
 int main(){
 	
