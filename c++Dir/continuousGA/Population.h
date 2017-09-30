@@ -7,7 +7,7 @@
 
 class Population {
     private:
-    
+
 		std::vector<Chromosome> chromosome;
         double similarity;
 		int numOfChrom;
@@ -15,7 +15,7 @@ class Population {
 		int popNum;
 		float elite;
 		float cross;
-    
+
 	public:
 
         //Default Constructor
@@ -23,19 +23,25 @@ class Population {
 
 		//Constructor for setting the size and numOfVars for each Chrom in Pop
 		Population(int numOfChrom, int sizeOfChrom);
-		
+
+        /*
+         * similarity methods, tests for similarity across the pop
+         */
+        void findGlobalSim();
+        void findLocalSim(int index);
+
 		//Similarity Mutator and Accessor methods
-		void set_similarity(double _similarity);
-        void findSim();
-		double get_similarity();
-				
+		void set_global_similarity(double _similarity);
+		double get_global_similarity();
+
+
 		//Getter for fitness
 		double get_fitness(int index);
-		
+
 		//sort method, currently using quickSort
 		void sort(int p, int q);
 		int partition(int p, int q);
-		
+
 		//Getter and setter for numOfChrom
 		void set_numOfChrom(int _num);
 		int get_numOfChrom();
@@ -51,7 +57,7 @@ class Population {
 		//Getter and setter for elite rate
 		void set_elite(float rate);
 		float get_elite();
-		
+
 		//Getter and setter for the cross rate
 		void set_cross(float rate);
 		float get_cross();
@@ -63,13 +69,13 @@ class Population {
 		//Getter and setter for chromosome using vectors
 		void set_chrom(int chromNum, Chromosome chrom);
 		Chromosome get_chrom(int chromNum);
-		
-		
+
+
 		//Mutate method
 		void mutate(int mutateRate);
 
 		//Getter and setter for finding similarity amongst chromosomes
-		
+
 		//crossover method needs multiple populations
 
 

@@ -1,5 +1,5 @@
 #include "Population.h"
-#include "algorithm" 
+#include "algorithm"
 
 /*
  * Default Constructor
@@ -8,7 +8,7 @@
 Population::Population()
 {
 	//std::vector<Chromosome> chromosome;
-	
+
 	this->similarity = 0;
 	this->numOfChrom = 200;
 	this->sizeOfChrom = 10;
@@ -17,14 +17,14 @@ Population::Population()
 	this->cross = 0.0;
 
 
-} 
+}
 /*
  * Constructor for setting the size and numOfVars for each chromosome in Pop
  */
 
 Population::Population(int _numOfChrom, int _sizeOfChrom)
 {
-	
+
 	this->numOfChrom = _numOfChrom;
 
 	this->sizeOfChrom = _sizeOfChrom;
@@ -34,9 +34,9 @@ Population::Population(int _numOfChrom, int _sizeOfChrom)
 	this->popNum = 0;
 
 	this->elite = .05;
-	 
+
 	this->cross = .8;
-	
+
 	for(int i = 0; i < numOfChrom; i++)
 	{
 		Chromosome chrom(sizeOfChrom);
@@ -48,16 +48,16 @@ Population::Population(int _numOfChrom, int _sizeOfChrom)
 /*
  * Getter and setter for similarity
  */
-void Population::set_similarity(double _similarity){
+void Population::set_global_similarity(double _similarity){
     this->similarity = _similarity;
 }
-double Population::get_similarity(){
+double Population::get_global_similarity(){
 	return similarity;
 }
 
 /*
  * Getter and setter for chroms?
- */ 
+ */
 double Population::get_fitness(int index)
 {
 	return chromosome[index].get_fitness();
@@ -113,7 +113,7 @@ float Population::get_elite()
 
 /*
  * Getter and setter for cross rate
- */ 
+ */
 void Population::set_cross(float rate)
 {
 	this->cross = rate;
@@ -161,8 +161,8 @@ Chromosome Population::get_chrom(int chromNum)
 
 
 /*
- * Quicksort 
- */ 
+ * Quicksort
+ */
 void Population::sort(int p, int q)
 {
 	int r;
@@ -176,7 +176,7 @@ void Population::sort(int p, int q)
 
 int Population::partition(int p, int q)
 {
-	int x = chromosome[p].get_fitness();
+	double x = chromosome[p].get_fitness();
 	int i = p;
 	int j;
 
@@ -194,16 +194,16 @@ int Population::partition(int p, int q)
 }
 
 /*
- * Mutate, for a specified of chromosomes, switches a random bit value in the gene of 
+ * Mutate, for a specified of chromosomes, switches a random bit value in the gene of
  * random chromosomes
  */
 
 void Population::mutate(int mutateRate)
 {
 	//int n = 0;
-	//std::cout << "mutateRate = " << mutateRate; 
+	//std::cout << "mutateRate = " << mutateRate;
 	for(int i = 0; i < 10; i++)
-	{ 
+	{
 		//std::cout << " n is equal to " << n;
 		int randChrom = rand() % numOfChrom;
 		if(randChrom < 10)
@@ -219,66 +219,43 @@ void Population::mutate(int mutateRate)
 }
 
 /*
- * Finds the similarity between chromosomes based on their bit values at index
-
-void Population::findSim()
+ * Finds the similarity between chromosomes
+ */
+void Population::findGlobalSim()
 {
+    double percDiff, totalPercDiff, popSim;
 
-	double simBits = 0.0;
-	double simPerc = 0.0;
 	for(int i = 0; i < numOfChrom-1; i++)
 	{
 		for(int j = i + 1; j < numOfChrom; j++)
 		{
-			
-			if(chromosome[i].get_fitness() == chromosome[j].get_fitness())
-			{	
-				simBits += sizeOfChrom;
-			}
-			
-			if(chromosome[i].get_fitness() != chromosome[j].get_fitness())
-			{	
-				for(int k = 0; k < sizeOfChrom; k++)
-				{
-					if(chromosome[i].get_gene(k) == chromosome[j].get_gene(k))
-					{
-						simBits += 1;
-					}
-					
-				}
-			}
-			
-			if(simBits > 0)
-			{
-				simPerc += (simBits / 160);
-				simBits = 0;	
-			}
+			percDiff = chromosome[i].get_fitness() - chromosome[j].get_fitness();
+            percDiff = percDiff / chromosome[i].get_fitness();
+            totalPercDiff += percDiff;
 		}
-		
-		simPerc = (simPerc / (200-i));
+        totalPercDiff = (totalPercDiff / (numOfChrom-i));
+        popSim += totalPercDiff;
 	}
-	
-	set_similarity(simPerc);
+    popSim = popSim / numOfChrom;
+	similarity = popSim;
 }
-*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// void Population::findLocalSim()
+// {
+//     double percDiff, totalPercDiff;
+//     for(int i = 0; i < numOfChrom-1; i++)
+// 	{
+// 		for(int j = i + 1; j < numOfChrom; j++)
+// 		{
+// 			percDiff = chromosome[i]. - chromosome[j].get_fitness();
+//             percDiff = percDiff / chromosome[i].get_fitness();
+//             totalPercDiff += percDiff;
+// 		}
+//         totalPercDiff = (totalPercDiff / (numOfChrom-i));
+//         popSim += totalPercDiff;
+// 	}
+//     popSim = popSim / numOfChrom;
+// 	similarity = popSim;
+//
+//
+// }
