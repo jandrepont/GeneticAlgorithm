@@ -147,12 +147,13 @@ int main(){
 
 	for(int i = 0; i < 1000; i++)
 	{
-        population[popNum].findGlobalSim();
         popNum = (popNum + 1) % 2;
 		preserveElites(population, popNum);
 		comboCross1(population, popNum);
-		population[popNum].mutate(5);
+		//population[popNum].mutate(0);
 		population[popNum].sort(0,200);
+        population[popNum].findTotalSim(0.2);
+        population[popNum].findLocalSim(0.2);
 		//population[1].findSim();
 
 		/*
@@ -162,7 +163,15 @@ int main(){
 		}
 		*/
         std::cout << "population " << i << " = " << population[0].get_fitness(0) << "\n";
-        std::cout << "population Similarity " << i << " = " << population[0].get_global_similarity() << "\n";
+        //gets the totSim for chromosome[0]
+        std::cout << "Global Average of Similarity = " << population[0].get_globalAverage() << "\n";
+        for(int j = 0; j < 10; j++)
+        {
+            std::cout << "Total Similarity of chrom[" << j  << "] = " << population[0].get_totSim(j) << "\n";
+        }
+        // std::cout << "Total Similarity of chrom[0] "  << " = " << population[0].get_totSim(0) << "\n";
+
+        std::cout << "Local Similarity of chrom[0].gene[0]" << i << " = " << population[0].get_locSim(0,0) << "\n\n\n";
 
 
 

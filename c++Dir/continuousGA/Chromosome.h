@@ -18,19 +18,6 @@ class Chromosome{
 		//destructor
 		//~Chromosome();
 
-        //nested class for genes
-        class gene{
-            public:
-                double get_fitness(){
-                    return fitness;
-                }
-                double set_fitness(double _fitness){
-                    fitness = _fitness;
-                }
-            private:
-                double fitness;
-        };
-
 		//Comparison function for comparing fitness and sorting chromosomes
 		bool operator<(const Chromosome rhs);
 
@@ -56,14 +43,34 @@ class Chromosome{
 		//set fitness
 		void set_fit(int fit);
 
+        //getter and setter for localSim, stores similarity
+        //of a gene to other genes
+        void set_locSim(int index, double similarity);
+        double get_locSim(int index);
+
+        //getter and setter for totalSim, stores similarity of a chromosome's
+        //total input relative to all other chrom in a population
+        void set_totSim(double similarity);
+        double get_totSim();
+
+
+        //get_input gets sum of input for chromosome
+        double get_input();
+
 		//Mutate method that is called by population
 		void mutate_gene(int index);
+
+
+
 
 	private:
 
 		std::vector<double> gene;
+        std::vector<double> localSim;
 		int size;
 		double fitness;
+        double totalSim;
+        double globalAverage;
 
 };
 

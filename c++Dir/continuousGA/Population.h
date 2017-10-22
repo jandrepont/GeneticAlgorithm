@@ -9,7 +9,7 @@ class Population {
     private:
 
 		std::vector<Chromosome> chromosome;
-        double similarity;
+        double globalAverage;
 		int numOfChrom;
 		int sizeOfChrom;
 		int popNum;
@@ -24,15 +24,14 @@ class Population {
 		//Constructor for setting the size and numOfVars for each Chrom in Pop
 		Population(int numOfChrom, int sizeOfChrom);
 
-        /*
-         * similarity methods, tests for similarity across the pop
-         */
-        void findGlobalSim();
-        void findLocalSim(int index);
 
-		//Similarity Mutator and Accessor methods
-		void set_global_similarity(double _similarity);
-		double get_global_similarity();
+
+        //localSim getter and setter
+        void set_locSim(int chromIndex, int geneIndex, double similarity);
+        double get_locSim(int chromIndex, int index);
+
+        //totalSim getter
+        double get_totSim(int index);
 
 
 		//Getter for fitness
@@ -62,7 +61,7 @@ class Population {
 		void set_cross(float rate);
 		float get_cross();
 
-		//Gett and setter for chromosome using bit values
+		//Gett and setter for chromosome
 		void set_gene(int chromNum , int index, double value);
 		int get_gene(int chromNum, int index);
 
@@ -70,16 +69,18 @@ class Population {
 		void set_chrom(int chromNum, Chromosome chrom);
 		Chromosome get_chrom(int chromNum);
 
+        //getter for globalAverage, gives the similarity of the entire population
+        //may or may not be useful, provides a very broad definition of similarity
+        double get_globalAverage();
 
 		//Mutate method
 		void mutate(int mutateRate);
 
-		//Getter and setter for finding similarity amongst chromosomes
-
-		//crossover method needs multiple populations
-
-
-
+        /*
+         * similarity methods, tests for similarity across the pop
+         */
+        void findTotalSim(double epsilon);
+        void findLocalSim(double epsilon);
 
 
 };

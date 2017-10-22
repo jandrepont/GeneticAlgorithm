@@ -1,33 +1,35 @@
 #include "Chromosome.h"
-#include <random> 
-#include <ctime> 
+#include <random>
+#include <ctime>
 
 /*
  * Default Constructor
  */
 Chromosome::Chromosome()
 {
-		
-	this->size = 10;
-	
+
+	size = 10;
+
+
 	//Type of random number distribution
 	std::uniform_real_distribution<double> dist(-1023.00, 1024.00);  //(min, max)
-		    
+
 	//Mersenne Twister: Good quality random number generator
 	std::mt19937 rng;
-			 
+
 	//Initialize with non-deterministic seeds
 	rng.seed(std::random_device{}());
- 
+
 
 	//this->gene.assign(10, dist(rng));//(10, double());
-	
-	
+
+    //initialize both vectors
 	for(int i = 0; i < size; i++){
 		//generate 10 random numbers
-		this->gene.push_back(dist(rng));
+		gene.push_back(dist(rng));
+        localSim.push_back(0);
 	}
-	 
+
 	set_fitness();
 
 }
@@ -38,26 +40,27 @@ Chromosome::Chromosome()
 Chromosome::Chromosome(int _size)
 {
 
-	this->size = _size;
-	
+	size = _size;
+
 	//Type of random number distribution
 	std::uniform_real_distribution<double> dist(-1023.00, 1024.00);  //(min, max)
-		    
+
 	//Mersenne Twister: Good quality random number generator
 	std::mt19937 rng;
-			 
+
 	//Initialize with non-deterministic seeds
 	rng.seed(std::random_device{}());
-				
+
 	for(int i = 0; i < size; i++){
 		gene.push_back(dist(rng));
+        localSim.push_back(0);
 	}
 
 	set_fitness();
 }
 
 /*
-Chromosome::~Chromosome() 
+Chromosome::~Chromosome()
 {
 	fitness = 0;
 }
@@ -66,7 +69,7 @@ Chromosome::~Chromosome()
 
 /*
  *bool comparison for sorting
- */ 
+ */
 bool Chromosome::operator<(const Chromosome rhs)
 {
 	return fitness < rhs.fitness;
@@ -77,7 +80,7 @@ bool Chromosome::operator<(const Chromosome rhs)
  */
 void Chromosome::set_gene(int index, double value)
 {
-	this->gene[index] = value;
+	gene[index] = value;
 	set_fitness();
 }
 
@@ -94,11 +97,11 @@ int Chromosome::get_size()
 }
 
 /*
- * Getter and setter for whole array of genes 
+ * Getter and setter for whole array of genes
  */
 void Chromosome::set_chrom(std::vector<double> _gene)
 {
-	this->gene = _gene;	
+	gene = _gene;
 }
 
 std::vector<double> Chromosome::get_chrom()
@@ -110,7 +113,7 @@ std::vector<double> Chromosome::get_chrom()
  * Getter and setter for fitness values, calls function from function.h
  */
 void Chromosome::set_fitness()
-{	
+{
 	function funct;
 	fitness = funct.function1Fitness(gene, size);
 }
@@ -120,8 +123,49 @@ double Chromosome::get_fitness()
 }
 
 //set fitness
-void Chromosome::set_fit(int fit){
-	this->fitness = fit;
+void Chromosome::set_fit(int fit)
+{
+	fitness = fit;
+}
+
+/*
+ * Getter and setter for local similarity vals,
+ * directly correlate to the gene vector
+ */
+ void Chromosome::set_locSim(int index, double similarity)
+ {
+     localSim[index] = similarity;
+ }
+
+ double Chromosome::get_locSim(int index)
+ {
+     return localSim[index];
+ }
+
+ /*
+  * Getter and setter for similarity of a chromosome's total input
+  * compared across all other chromosome of a population
+ */
+ void Chromosome::set_totSim(double similarity)
+ {
+     totalSim = similarity;
+ }
+ double Chromosome::get_totSim()
+ {
+     return totalSim;
+ }
+
+ /*
+  * get_input returns the total val of the genes for a chromosome
+*/
+double Chromosome::get_input()
+{
+    double sum;
+    for(int i = 0; i < size; i++)
+    {
+        sum += gene[i];
+    }
+    return sum;
 }
 
 /*
@@ -130,36 +174,17 @@ void Chromosome::set_fit(int fit){
  */
 void Chromosome::mutate_gene(int index)
 {
-	
+
 	//Type of random number distribution
 	std::uniform_real_distribution<double> dist(-1023.00, 1024.00);  //(min, max)
-		    
+
 	//Mersenne Twister: Good quality random number generator
 	std::mt19937 rng;
-			 
+
 	//Initialize with non-deterministic seeds
 	rng.seed(std::random_device{}());
-	
-	
+
+
 	gene[index] = dist(rng);
 	set_fitness();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
