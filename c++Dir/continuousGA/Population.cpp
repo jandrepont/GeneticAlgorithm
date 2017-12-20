@@ -196,7 +196,7 @@ int Population::partition(int p, int q)
 
 	for(j = p+1; j<q; j++)
 	{
-		if(chromosome[j].get_fitness() >= x)
+		if(chromosome[j].get_fitness() <= x)
 		{
 			i = i + 1;
 			std::swap(chromosome[i], chromosome[j]);

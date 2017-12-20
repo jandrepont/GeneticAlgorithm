@@ -12,7 +12,7 @@ Chromosome::Chromosome()
 
 
 	//Type of random number distribution
-	std::uniform_real_distribution<double> dist(-1023.00, 1024.00);  //(min, max)
+	std::uniform_real_distribution<double> dist(-1023.00, 1023.00);  //(min, max)
 
 	//Mersenne Twister: Good quality random number generator
 	std::mt19937 rng;
@@ -43,7 +43,7 @@ Chromosome::Chromosome(int _size)
 	size = _size;
 
 	//Type of random number distribution
-	std::uniform_real_distribution<double> dist(-1023.00, 1024.00);  //(min, max)
+	std::uniform_real_distribution<double> dist(-1023.00, 1023.00);  //(min, max)
 
 	//Mersenne Twister: Good quality random number generator
 	std::mt19937 rng;
@@ -115,7 +115,8 @@ std::vector<double> Chromosome::get_chrom()
 void Chromosome::set_fitness()
 {
 	function funct;
-	fitness = funct.function1Fitness(gene, size);
+	fitness = funct.functionZakharov(gene, size);
+
 }
 double Chromosome::get_fitness()
 {
@@ -176,7 +177,7 @@ void Chromosome::mutate_gene(int index)
 {
 
 	//Type of random number distribution
-	std::uniform_real_distribution<double> dist(-1023.00, 1024.00);  //(min, max)
+	std::uniform_real_distribution<double> dist(-1023.00, 1023.00);  //(min, max)
 
 	//Mersenne Twister: Good quality random number generator
 	std::mt19937 rng;
